@@ -11,7 +11,7 @@ var connection = mysql.createConnection({
     user: "root",
 
     // Your password
-    password: "password",
+    password: "123456789",
     database: "employee_tracker_db"
 });
 
@@ -84,52 +84,47 @@ function viewDepartments() {
 }
 
 function addEmployee() {
-    inquirer.prompt([
+    inquirer.prompt([{
+            type: "input",
+            name: "firstName",
+            message: "What is the employees first name?"
+        },
         {
-            message: "enter your first name:",
             type: "input",
-            name: "first_name"
-        }, {
-            message: "enter your last name:",
-            type: "input",
-            name: "last_name"
-        }, {
-            message: "enter your role ID:",
+            name: "lastName",
+            message: "What is the employees last name?"
+        },
+        {
             type: "number",
-            name: "role_id"
-        }, {
-            message: "enter your manager ID:",
-            type: "input",
-            name: "manager_id"
+            name: "roleId",
+            message: "What is the employees role ID"
+        },
+        {
+            type: "number",
+            name: "managerId",
+            message: "What is the employees manager's ID?"
         }
-    ]).then(function (response) {
-        connection.query("INSERT INTO employee (first_name, last_name, role_id, manager_id) values (?, ?, ?, ?)", [response.first_name, response.last_name, response.role_id, response.manager_id], function (err, data) {
-            console.log("successfully added employee!");
-            console.table(data)
+    ]).then(function(res) {
+        connection.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [res.firstName, res.lastName, res.roleId, res.managerId], function(err, data) {
+            if (err) throw err;
+            console.table("Successfully Inserted");
+            askQuestions();
         })
-        askQuestions();
     })
-
 }
 
 function addDepartment() {
-    inquirer.prompt([
-        {
-            message: "enter the department name:",
-            type: "input",
-            name: "name"
-        }, {
-            message: "enter the department ID:",
-            type: "number",
-            name: "department_id"
-        }
-    ]).then(function (response) {
-        connection.query("INSERT INTO department (name, department_id) values (?, ?)", [response.name, response.department_id], function (err, data) {
-            console.table(data);
+    inquirer.prompt([{
+        type: "input",
+        name: "department",
+        message: "What is the department that you want to add?"
+    }, ]).then(function(res) {
+        connection.query('INSERT INTO department (name) VALUES (?)', [res.department], function(err, data) {
+            if (err) throw err;
+            console.table("Successfully Inserted");
+            askQuestions();
         })
-        askQuestions();
     })
-
 }
 
 function addRole() {
